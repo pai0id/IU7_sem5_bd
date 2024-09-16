@@ -1,7 +1,7 @@
 import csv
 import random
 from faker import Faker
-from datetime import timedelta
+from datetime import timedelta, datetime
 import os
 
 fake = Faker()
@@ -22,7 +22,8 @@ def generate_events(num_events, num_venues):
     events = []
     for _ in range(num_events):
         start_time = fake.time()
-        end_time = fake.time()
+        duration = random.randint(1, 3)
+        end_time = (datetime.strptime(start_time, '%H:%M:%S') + timedelta(hours=duration)).strftime('%H:%M:%S')
         events.append([
             random.randint(1, num_venues),
             fake.catch_phrase(),
@@ -105,7 +106,10 @@ num_tickets = 2000
 num_customers = 1000
 num_orders = 1500
 
-os.mkdir("data")
+try:
+    os.mkdir("data")
+except Exception:
+    print("data exists")
 write_to_csv('data/venues.csv', generate_venues(num_venues), ['name', 'address', 'city', 'capacity', 'phone'])
 write_to_csv('data/events.csv', generate_events(num_events, num_venues), ['venue_id', 'name', 'date', 'start_time', 'end_time'])
 write_to_csv('data/performers.csv', generate_performers(num_performers), ['name', 'genre', 'country'])
