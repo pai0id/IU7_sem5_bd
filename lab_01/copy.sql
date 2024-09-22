@@ -3,7 +3,7 @@ FROM '/data/venues.csv'
 DELIMITER ','
 CSV HEADER;
 
-COPY Events(venue_id, name, date, start_time, end_time)
+COPY Events(venue_id, name, date, start_time, duration)
 FROM '/data/events.csv'
 DELIMITER ','
 CSV HEADER;

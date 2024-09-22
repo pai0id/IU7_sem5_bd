@@ -6,6 +6,20 @@ import os
 
 fake = Faker()
 
+def get_rnd_duration():
+    if random.randint(0, 6) == 1:
+        days = random.randint(1, 7)
+    else:
+        days = 0
+    
+    hours = random.randint(0, 23)
+    minutes = random.randint(0, 59)
+    seconds = 0
+
+    interval_str = f"{days} {hours:02d}:{minutes:02d}:{seconds:02d}"
+
+    return interval_str
+
 def generate_venues(num_venues):
     venues = []
     for _ in range(num_venues):
@@ -23,13 +37,13 @@ def generate_events(num_events, num_venues):
     for _ in range(num_events):
         start_time = fake.time()
         duration = random.randint(1, 3)
-        end_time = (datetime.strptime(start_time, '%H:%M:%S') + timedelta(hours=duration)).strftime('%H:%M:%S')
+        duration = get_rnd_duration()
         events.append([
             random.randint(1, num_venues),
             fake.catch_phrase(),
             fake.date_this_year(),
             start_time,
-            end_time
+            duration
         ])
     return events
 

@@ -17,9 +17,9 @@ Table Events {
   id int [pk, increment]
   venue_id int [ref: > Venues.id]
   name text
-  date datetime
+  date date
   start_time time
-  end_time time
+  duration interval
 }
 
 Table Performers {
@@ -53,7 +53,7 @@ Table Customers {
 Table Orders {
   id int [pk, increment]
   customer_id int [ref: > Customers.id]
-  order_date datetime
+  order_date date
   total_amount decimal
 }
 

@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS Events (
     name TEXT,
     date DATE,
     start_time TIME,
-    end_time TIME
+    duration INTERVAL
 );
 
 CREATE TABLE IF NOT EXISTS Performers (
