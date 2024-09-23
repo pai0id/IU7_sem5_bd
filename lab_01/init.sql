@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS Event_Performers (
     performer_id INTEGER
 );
 
-DROP TYPE IF EXISTS ticket_status CASCADE;
+DROP TYPE IF EXISTS ticket_status;
 CREATE TYPE ticket_status AS ENUM ('available', 'sold', 'reserved');
 
 CREATE TABLE IF NOT EXISTS Tickets (

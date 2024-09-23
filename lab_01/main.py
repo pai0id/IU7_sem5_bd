@@ -116,7 +116,7 @@ def write_to_csv(filename, data, headers):
 num_venues = 100
 num_events = 500
 num_performers = 300
-num_tickets = 2000
+num_tickets = 200000
 num_customers = 1000
 num_orders = 1500
 

@@ -1,3 +1,28 @@
+-- task
+
+-- Вывести всех исполнителей, битлеты на концерты которых купил покупатель 8
+SELECT DISTINCT 
+    p.id AS performer_id,
+    p.name AS performer_name,
+    p.genre,
+    p.country
+FROM 
+    Customers c
+JOIN 
+    Orders o ON c.id = o.customer_id
+JOIN 
+    Order_Tickets ot ON o.id = ot.order_id
+JOIN 
+    Tickets t ON ot.ticket_id = t.id
+JOIN 
+    Events e ON t.event_id = e.id
+JOIN 
+    Event_Performers ep ON e.id = ep.event_id
+JOIN 
+    Performers p ON ep.performer_id = p.id
+WHERE 
+    c.id = 8;
+
 -- 1
 
 SELECT *
@@ -78,24 +103,20 @@ WHERE EXISTS (
 
 -- 6
 
--- Пример: Найти всех клиентов, чьи заказы были больше всех заказов клиента с ID 1
+-- Пример: Найти все заказы больше всех заказов клиента с ID 13
 SELECT *
-FROM Customers c
-WHERE c.id != 1 AND EXISTS (
-    SELECT 1
-    FROM Orders o
-    WHERE o.customer_id = c.id
-    AND o.total_amount > ALL (
-        SELECT total_amount
-        FROM Orders
-        WHERE customer_id = 1
-    )
+FROM Orders o
+WHERE o.customer_id != 13
+AND o.total_amount > ALL (
+    SELECT total_amount
+    FROM Orders
+    WHERE customer_id = 13
 );
 
 -- 7
 
 -- Получить общее количество заказов и их общую сумму для каждого клиента
-SELECT 
+SELECT
     c.id AS customer_id,
     c.first_name || ' ' || c.last_name AS customer_name,
     COUNT(o.id) AS total_orders,
@@ -333,41 +354,21 @@ JOIN
 
 -- 23
 
-WITH RECURSIVE PerformerEvents AS (
-    SELECT 
-        p.id AS performer_id,
-        p.name AS performer_name,
-        e.id AS event_id,
-        e.name AS event_name,
-        e.date,
-        e.start_time
-    FROM 
-        Performers p
-    JOIN 
-        Event_Performers ep ON p.id = ep.performer_id
-    JOIN 
-        Events e ON ep.event_id = e.id
-    WHERE 
-        p.id = 1
+-- Информация о билетах на мероприятия конкретного исполнителя
+WITH RECURSIVE PerformerEvents (event_id, performer_name, venue_name, ticket_id, ticket_status) AS (
+    SELECT e.id, p.name AS performer_name, v.name AS venue_name, t.id AS ticket_id, t.status AS ticket_status
+    FROM Performers p
+    JOIN Event_Performers ep ON p.id = ep.performer_id
+    JOIN Events e ON e.id = ep.event_id
+    JOIN Venues v ON e.venue_id = v.id
+    JOIN Tickets t ON t.event_id = e.id
+    WHERE p.id = 13
     UNION ALL
-    SELECT 
-        p.id AS performer_id,
-        p.name AS performer_name,
-        e.id AS event_id,
-        e.name AS event_name,
-        e.date,
-        e.start_time
-    FROM 
-        Performers p
-    JOIN 
-        Event_Performers ep ON p.id = ep.performer_id
-    JOIN 
-        Events e ON ep.event_id = e.id
-    INNER JOIN 
-        PerformerEvents pe ON p.id = pe.performer_id
+    SELECT pe.event_id, pe.performer_name, pe.venue_name, t.id, t.status
+    FROM PerformerEvents pe
+    JOIN Tickets t ON t.event_id = pe.event_id
 )
 SELECT * FROM PerformerEvents;
-
 
 -- 24
 
@@ -384,9 +385,9 @@ JOIN
 -- 25
 
 INSERT INTO Customers (first_name, last_name, email) VALUES
-('John', 'Doe', 'john.doe@example.com'),
+('Jonn', 'Doe', 'john.doe@example.com'),
 ('Jane', 'Smith', 'jane.smith@example.com'),
-('John', 'Doe', 'john.doe@example.com'),  -- Дубликат
+('Jonn', 'Doe', 'john.doe@example.com'),  -- Дубликат
 ('Alice', 'Johnson', 'alice.johnson@example.com'),
 ('Jane', 'Smith', 'jane.smith@example.com');  -- Дубликат
 

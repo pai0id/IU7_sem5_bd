@@ -45,7 +45,7 @@ services:
       resources:
         limits:
           cpus: '1'
-          memory: 4G
+          memory: 8G
     # networks:
     #   - postgres
 
